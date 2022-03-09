@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Research</title>
+ <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+	  <h1><a href="index.html">Tamas <span class="logo_colour">Horvath</span></a></h1>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="index.html">Home</a></li>
+          <li class="selected"><a href="research.html">Research</a></li>
+          <li><a href="publications.html">Publication list</a></li>
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+        </ul>
+      </div>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+      <div id="content">
+        <h1>Space-Time Hybridizable Discontinuous Galerkin on moving domains</h1>
+        Pressure field and velocity vectors for simulation of an incompressible flow around an oscillating NACA0012 aifoil.
+        <p><img src="NS_up_down.gif" width=600 height=400 alt="space-time" /></p>
+        <!-- insert the page content here -->
+        <h1>Hybridizable/Embedded Discontinuous Galerkin</h1>
+        Discontinuous Galerkin schemes define the fluxes over element boundaries by using the unknowns from the 2 adjacent elements. Hybridizable/Embedded methods introduce
+        additional unknowns on the element boundaries, the so-called facet unknowns, and the fluxes are defined using the unknowns from the current element and from the boundary. 
+        For Hybridizable DG these additional unknowns represent discontinuous function on the boundaries, while for Embedded DG they represent continuous functions on the boundaries.
+        The introductions of these additional unknowns will result in a large linear system; however, it can be reduced to the facet unknowns by using the Schur complement. This requires 
+        the inversion of the matrix involving the unknowns on the element interiors, but due to the choice of the fluxes this matrix is block diagonal, therefore easily invertible.<br><br>
+        
+        Using the MFEM Library (<a href="http://mfem.org/">mfem.org</a>) I implemented these methods using the Local DG flux for the diffusion. In this case some additional postprocessing can be done,
+        which results in superconvergence for the diffusion dominated case. The following plot shows the number of degrees of freedom for and n-by-n structured triangular mesh in 2D. Dashed line: DG, continuous line CG, diamonds: HDG, circles EDG.
+        
+        <span class="center"><img src="DoF.jpg" alt="DoF" width=600 heigt=200/>
+        </span></p>
+
+        <!--Also, the rates of convergence are shown for the test case
+        \begin{equation*}
+        \begin{alignedat}{3}
+        -\Delta u + \nabla \cdot ((-1,1)^T u)&= f \qquad && \mbox{in}\,\,\Omega = [0,1]^2, \\
+        u &= g \qquad && \mbox{on}\,\, \Gamma = \partial \Omega
+        \end{alignedat}
+        \end{equation*}
+        
+        where \(f,g\) are such that the exact solution is \(u = \sin(2\pi x)\sin(2\pi y)\)
+        
+        For more details about these implementations see the <a href="http://www.math.uwaterloo.ca/~srheberg/group.html">webpage</a> of our research group.-->
+        
+        
+        <h1>Space-time HDG/EDG</h1>
+        For a time-dependent problem, when the domain also changes with time, the space-time approach provides a discretization that is arbitrarily high order both in space and in time.
+        
+        The concept is to rewrite the d-dimensional time dependent problem to a d+1-dimensional problem, where diffusion acts only in d-dimension. In other words starting from the 
+        time dependent problem on a time dependent domain with initial and boundary conditions
+        \begin{equation*}
+        \begin{alignedat}{3}
+        \partial_t u -\nabla \cdot \nu\nabla u + \nabla \cdot (\mathbf{b} u) &= f \qquad & \mbox{in}\,\,\Omega(t), \\
+        u(0,x) &= u_0(x) \qquad & \mbox{in}\,\,\Omega(t_0),\\
+        u(t,x) &= g(t,x) \qquad & \mbox{on}\,\,\Gamma(t),
+        \end{alignedat}
+        \end{equation*}
+        
+        we set up the d+1-dimensional problem
+        \begin{equation*}
+        \begin{alignedat}{3}
+        -\overline{\nabla} \cdot \nu\overline{\nabla} u + \nabla \cdot ((1,\mathbf{b})u) &= f \qquad & \mbox{in}\,\,\Omega(t), \\
+        u(0,x) &= u_0(x) \qquad & \mbox{in}\,\,\Omega(t_0),\\
+        u(t,x) &= g(t,x) \qquad & \mbox{on}\,\,\Gamma(t),
+        \end{alignedat}
+        \end{equation*}
+        
+        where \(\overline{\nabla} = (\partial_x, \partial_y, \partial_z)\) is the spatial gradient \(\nabla = (\partial_t, \overline{\nabla})\) is the space-time gradient.<br><br>
+        
+        The time is split into intervals \(t_{initial} = t_0 < t_1 < \cdots < t_N = t_{final}\), and the problem is solved from interval to interval on the evolving domain.
+        The solution in the different time intervals can be separated by using upwind flux for the advection. At every interval the only information that is needed from the 
+        previous one is the solution on the top of the previous time interval since this will be used as an initial condition.<br><br>
+
+        On the following picture, the time dependent solution of the following problem can be seen with the movement of the domain for \(t\in [0,3]\)
+        \begin{alignedat}{3}
+        \partial_t u -0.01\Delta u + \nabla \cdot ((-4y,4x)^T u)&= 0 \qquad && \mbox{in}\,\,\Omega(t), \\
+        \end{alignedat}
+        
+        where the initial and boundary conditions are set in order to achive the above solution.
+        <p><img src="st.gif" width=400 height=300 alt="space-time" /></p>
+        
+        The rates of convergence for both the embedded and the hybridized method are \(\mathcal{O}(h^{k+1} + (\Delta t)^{k+1})\) when using polynomails of degree \(k\).
+        The following plots show the error on the final time level for the above mentioned problem plotted against the mesh size and also against the degrees of freedom. 
+        The dashed lines represent the HDG solutions, the continuous lines represent the EDG solutions, and the colors black and blue are for polynomial degrees 1 and 3, respectively.
+        It can be seen that in this case the embedded is computationally cheaper than the hybridized one, since the same error can be achieved using fewer degrees of freedom.
+        <span class="center"><img src="st_vs_size.jpg" alt="Error vs mesh size" width=250 heigt=250/>
+        <img src="st_vs_dof.jpg" alt="Error vs number of dofs" width=250 heigt=250/></span></p>
+
+        <h1>Adjoint based error estimation and optimization </h1>
+        
+        Goal-oriented error estimation deals with the problem of solving a PDE \(Lu = 0\) with boundary conditions \(Bu = 0\) and computing a target value of the solution \(Ju = 0\).
+        If the target functional \(J(u)\) has the form
+        
+        $$J(u) = \int_\Omega j_\Omega u + \int_\Gamma j_\Gamma u $$
+        
+        then an adjoint problem can be set up
+        \begin{equation*}
+        \begin{alignedat}{3}
+        L^*z =& j_\Omega \\
+        B^*z =& j_\Gamma
+        \end{alignedat}
+        \end{equation*}
+        
+        where \(L^*\) and \(B^*\) are the adjoints of the opearators \(L\) and \(B\). Using \(u\) and \(z\), mesh indicators can be generated that will provide an efficient mesh refinement so that the target value will be well approximated.
+        
+        Let us consider the convection-diffusion problem
+        \begin{equation*}
+        \begin{alignedat}{3}
+        -0.01\Delta u + \nabla \cdot ((-1,-1)^T u)&= 0 \qquad && \mbox{in}\,\,\Omega = [0,1]^2, \\
+        u &= g \qquad && \mbox{on}\,\, \Gamma = \partial \Omega
+        \end{alignedat}
+        \end{equation*}
+        
+        where \(g\) is choosen such that the solution is $$u(x,y) = \frac{exp(100x)-exp(100)}{1-exp(100)}.$$
+        
+        The target functional is the diffusive flux on \(x = 0\), weighted with the function pictured on the left.
+        The final mesh after 9 steps is pictured on the right. It contains 1826 triangles and the error is \(|J(u) - J(u_h)| = 5.139\cdot 10^{-3}\).
+
+        <span class="center"><img src="bubble.jpg" alt="Adjoint weight" width=200 heigt=200/>
+        <img src="final_mesh.jpg" alt="Final mesh" width=200 heigt=200/></span></p>
+        
+        A similar approach can be used for adjoint-based optimization. An adjoint problem can be set up to determine the geometrical sensitivities
+        of the design parameters and modify the geometry in order to reduce some optimization function.
+        
+        An interesting industrial application of this approach is the optimization of airfoil design.
+        This may be illustrated via the following inverse design problem: suppose our target profile is the NACA0015 airfoil. We may solve the compressible Euler equations to obtain the pressure at the leading edge,
+        and denote it by \(p_{ref}\). 
+        Then starting from a different profile, such as the NACA0016, we select 2 design parameters: the semi-heights of the upper and the lower profile of the airfoil. We wish to minimize
+        $$J(u) = (p - p_{ref})^2. $$ Upon minimization, we see that the NACA0016 airfoil has been transformed into the NACA0015 airfoil.
+        
+        The results can be seen below. The initial profile is NACA0016 (blue curve), the final one is NACA0015 (red curve).
+        <span class="center"><img src="Naca_opt.jpg" alt="Adjoint optimization" width=300 heigt=60/>
+        </span></p>
+        
+      </div>
+    </div>
+    <div id="content_footer"></div>
+    <div id="footer">
+      Copyright &copy; Tamas Horvath | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">design from HTML5webtemplates.co.uk</a>
+    </div>
+  </div>
+</body>
+</html>
