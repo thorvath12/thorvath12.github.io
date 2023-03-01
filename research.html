@@ -52,6 +52,9 @@
         <h1>Space-Time Hybridizable Discontinuous Galerkin on moving domains</h1>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/v8-EubYMT-A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+<br>
+<br>
+
         Discontinuous Galerkin schemes define the fluxes over element boundaries by using the unknowns from the two adjacent elements. Hybridizable/Embedded methods introduce
         additional unknowns on the element boundaries, the so-called facet unknowns, and the fluxes are defined using the unknowns from the current element and from the boundary. 
         For Hybridizable DG these additional unknowns represent discontinuous function on the boundaries, while for Embedded DG they represent continuous functions on the boundaries.
@@ -120,51 +123,6 @@
         <span class="center"><img src="st_vs_size.jpg" alt="Error vs mesh size" width=250 heigt=250/>
         <img src="st_vs_dof.jpg" alt="Error vs number of dofs" width=250 heigt=250/></span></p>
 
-        <h1>Adjoint based error estimation and optimization </h1>
-        
-        Goal-oriented error estimation deals with the problem of solving a PDE \(Lu = 0\) with boundary conditions \(Bu = 0\) and computing a target value of the solution \(Ju = 0\).
-        If the target functional \(J(u)\) has the form
-        
-        $$J(u) = \int_\Omega j_\Omega u + \int_\Gamma j_\Gamma u $$
-        
-        then an adjoint problem can be set up
-        \begin{equation*}
-        \begin{alignedat}{3}
-        L^*z =& j_\Omega \\
-        B^*z =& j_\Gamma
-        \end{alignedat}
-        \end{equation*}
-        
-        where \(L^*\) and \(B^*\) are the adjoints of the opearators \(L\) and \(B\). Using \(u\) and \(z\), mesh indicators can be generated that will provide an efficient mesh refinement so that the target value will be well approximated.
-        
-        Let us consider the convection-diffusion problem
-        \begin{equation*}
-        \begin{alignedat}{3}
-        -0.01\Delta u + \nabla \cdot ((-1,-1)^T u)&= 0 \qquad && \mbox{in}\,\,\Omega = [0,1]^2, \\
-        u &= g \qquad && \mbox{on}\,\, \Gamma = \partial \Omega
-        \end{alignedat}
-        \end{equation*}
-        
-        where \(g\) is choosen such that the solution is $$u(x,y) = \frac{exp(100x)-exp(100)}{1-exp(100)}.$$
-        
-        The target functional is the diffusive flux on \(x = 0\), weighted with the function pictured on the left.
-        The final mesh after 9 steps is pictured on the right. It contains 1826 triangles and the error is \(|J(u) - J(u_h)| = 5.139\cdot 10^{-3}\).
-
-        <span class="center"><img src="bubble.jpg" alt="Adjoint weight" width=200 heigt=200/>
-        <img src="final_mesh.jpg" alt="Final mesh" width=200 heigt=200/></span></p>
-        
-        A similar approach can be used for adjoint-based optimization. An adjoint problem can be set up to determine the geometrical sensitivities
-        of the design parameters and modify the geometry in order to reduce some optimization function.
-        
-        An interesting industrial application of this approach is the optimization of airfoil design.
-        This may be illustrated via the following inverse design problem: suppose our target profile is the NACA0015 airfoil. We may solve the compressible Euler equations to obtain the pressure at the leading edge,
-        and denote it by \(p_{ref}\). 
-        Then starting from a different profile, such as the NACA0016, we select 2 design parameters: the semi-heights of the upper and the lower profile of the airfoil. We wish to minimize
-        $$J(u) = (p - p_{ref})^2. $$ Upon minimization, we see that the NACA0016 airfoil has been transformed into the NACA0015 airfoil.
-        
-        The results can be seen below. The initial profile is NACA0016 (blue curve), the final one is NACA0015 (red curve).
-        <span class="center"><img src="Naca_opt.jpg" alt="Adjoint optimization" width=300 heigt=60/>
-        </span></p>
         
       </div>
     </div>
